@@ -1,10 +1,14 @@
 # RV32I RISC-V CPU and FPGA SoC
 
+Custom RV32I RISC-V processors implemented in SystemVerilog.
+
 ## Goals
-- Build a 5-stage pipelined RV32I processor
-- Implement on FPGA
-- Integrate UART and peripherals
-- Develop a hardware accelerator
+- Single-cycle RV32I CPU
+- Multi-cycle RV32I CPU
+- 5-stage pipeline
+- FPGA implementation
+- SoC integration
+- Hardware accelerator
 
 ## Current Status
 - [ ] Single-cycle CPU

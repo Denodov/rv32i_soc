@@ -1,12 +1,28 @@
 # Architecture
 
-## Single-Cycle RV32I Processor
+## Project Overview
 
-The processor implements a single-cycle RV32I RISC-V architecture in SystemVerilog. Each instruction completes execution within a single clock cycle.
+This project follows a progressive approach to building a FPGA-based SoC, beginning with a single-cycle RV32I processor and upgrading into more sophisticated impementations. Each stage builds upon the last while offering beneficial design changes and improvements.
 
-### Top-Level Structure
+### Development Roadmap
 
-The design is divided into three major subsystems:
+* [x] Single-Cycle RV32I Processor
+* [ ] Multicycle RV32I Processor
+* [ ] 5-Stage Pipelined RV32I Processor
+* [ ] FPGA-Based System-on-Chip (SoC)
+* [ ] Hardware Accelerator
+
+---
+
+# Single-Cycle RV32I Processor
+
+## Overview
+
+The single-cycle processor implements the RV32I RISC-V instruction set architecture in SystemVerilog. Every instruction completes within a single clock cycle, making this implementation straightforward to understand and verify while serving as the architectural foundation for future processor designs.
+
+## Top-Level Structure
+
+The processor consists of three primary subsystems:
 
 1. Control Unit
 2. Datapath
@@ -16,11 +32,9 @@ The design is divided into three major subsystems:
 
 ## Control Unit
 
-The Control Unit generates all processor control signals required for instruction execution.
+The Control Unit generates all control signals required to execute RV32I instructions.
 
-### Components
-
-#### Main Decoder (`maindec.sv`)
+### Main Decoder (`maindec.sv`)
 
 Decodes the instruction opcode and generates:
 
@@ -33,7 +47,7 @@ Decodes the instruction opcode and generates:
 * Result source selection
 * ALU operation code
 
-#### ALU Decoder (`aludec.sv`)
+### ALU Decoder (`aludec.sv`)
 
 Uses:
 
@@ -41,7 +55,7 @@ Uses:
 * funct3
 * funct7
 
-to determine the specific ALU operation.
+to determine the required ALU operation.
 
 Supported operations include:
 
@@ -51,9 +65,9 @@ Supported operations include:
 * OR
 * SLT
 
-#### Controller (`controller.sv`)
+### Controller (`controller.sv`)
 
-Integrates the Main Decoder and ALU Decoder and generates:
+Combines the Main Decoder and ALU Decoder to generate:
 
 * ALUControl
 * RegWrite
@@ -63,17 +77,15 @@ Integrates the Main Decoder and ALU Decoder and generates:
 * ImmSrc
 * PCSrc
 
-The controller also determines branch and jump behavior using the ALU Zero flag.
+Branch and jump decisions are generated using the ALU Zero flag.
 
 ---
 
 ## Datapath
 
-The Datapath performs instruction execution and data movement throughout the processor.
+The datapath performs instruction execution and transfers data between processor components.
 
-### Components
-
-#### Program Counter Logic
+### Program Counter Logic
 
 Files:
 
@@ -83,36 +95,32 @@ Files:
 
 Responsibilities:
 
-* Store current PC value
+* Maintain the Program Counter
 * Compute PC + 4
-* Compute branch/jump targets
-* Select next PC value
+* Compute branch and jump targets
+* Select the next Program Counter value
 
----
+### Register File (`regfile.sv`)
 
-#### Register File (`regfile.sv`)
-
-Implements the RV32I register set:
+Implements:
 
 * 32 general-purpose registers
-* Two read ports
-* One write port
-* Register x0 hardwired to zero
+* Two combinational read ports
+* One synchronous write port
+* Hardwired x0 register
 
----
-
-#### Immediate Extension Unit (`extend.sv`)
+### Immediate Extension Unit (`extend.sv`)
 
 Generates sign-extended immediates for:
 
-* I-type instructions
-* S-type instructions
-* B-type instructions
-* J-type instructions
+* I-type
+* S-type
+* B-type
+* J-type
 
----
+instructions.
 
-#### Arithmetic Logic Unit (`alu.sv`)
+### Arithmetic Logic Unit (`alu.sv`)
 
 Performs arithmetic and logical operations.
 
@@ -129,24 +137,20 @@ Outputs:
 * ALU Result
 * Zero Flag
 
----
-
-#### Multiplexers
+### Multiplexers
 
 Files:
 
 * `mux2.sv`
 * `mux3.sv`
 
-Used to select:
+Used for:
 
-* ALU operands
-* Next PC source
-* Writeback source
+* ALU operand selection
+* Program Counter selection
+* Writeback source selection
 
----
-
-#### Datapath Integration (`datapath.sv`)
+### Datapath Integration (`datapath.sv`)
 
 Connects:
 
@@ -157,7 +161,7 @@ Connects:
 * Memory Interface
 * Writeback Logic
 
-to execute instructions.
+to execute RV32I instructions.
 
 ---
 
@@ -165,19 +169,13 @@ to execute instructions.
 
 ### Instruction Memory (`imem.sv`)
 
-Stores program instructions.
-
 Features:
 
-* 64-word memory
+* 64-word instruction memory
 * Word-aligned instruction fetch
-* Program loaded using `$readmemh`
-
----
+* Program initialization using `$readmemh`
 
 ### Data Memory (`dmem.sv`)
-
-Stores program data.
 
 Supports:
 
@@ -191,18 +189,9 @@ Supports:
 
 ### Single-Cycle Core (`riscvsingle.sv`)
 
-Integrates:
+Integrates the Controller and Datapath into a complete RV32I processor.
 
-* Controller
-* Datapath
-
-and forms the complete RV32I processor.
-
----
-
-## Top-Level System
-
-### Top Module (`top.sv`)
+### Top-Level Module (`top.sv`)
 
 Integrates:
 
@@ -210,4 +199,108 @@ Integrates:
 * Instruction memory
 * Data memory
 
-and serves as the top-level simulation and FPGA integration module.
+and serves as the top-level simulation module.
+
+---
+
+# Multicycle RV32I Processor
+
+## Overview
+
+The multicycle processor extends the single-cycle architecture by dividing instruction execution across multiple clock cycles. Instead of completing every instruction in one clock cycle, the processor sequences instructions through multiple states controlled by a finite-state machine.
+
+This design reuses hardware resources across cycles, including the ALU, register file, memory interface, and intermediate datapath registers.
+
+## Current Status
+
+- [x] Multicycle datapath diagram
+- [x] Controller diagram
+- [x] FSM control design
+- [x] Instruction execution sequencing
+- [x] Control signal planning
+- [ ] SystemVerilog implementation
+- [ ] Simulation testbench
+- [ ] Verification
+
+## Design Components
+
+### Datapath
+
+The multicycle datapath has been designed to support staged instruction execution across multiple cycles.
+
+Planned datapath elements include:
+
+- Program Counter
+- Instruction Register
+- Register File
+- ALU
+- ALUOut Register
+- Memory Data Register
+- Immediate Extension Unit
+- Multiplexers for ALU source, PC source, and result selection
+
+### Controller
+
+The controller is designed as a finite-state machine responsible for sequencing each instruction through the required execution states.
+
+The FSM controls:
+
+- Instruction fetch
+- Instruction decode
+- ALU execution
+- Memory access
+- Register writeback
+- Branch and jump behavior
+
+### FSM
+
+The multicycle FSM has been designed to generate cycle-specific control signals for each instruction class.
+
+Planned instruction classes include:
+
+- R-type arithmetic/logical instructions
+- I-type immediate instructions
+- Load instructions
+- Store instructions
+- Branch instructions
+- Jump instructions
+
+## Next Step
+
+The next step is translating the completed architecture, datapath diagram, controller diagram, and FSM design into SystemVerilog modules and verifying the implementation through simulation.
+
+---
+
+# 5-Stage Pipelined RV32I Processor
+
+## Overview
+
+*Under development.*
+
+The pipelined processor will execute multiple instructions concurrently by dividing execution into five pipeline stages:
+
+* Instruction Fetch (IF)
+* Instruction Decode (ID)
+* Execute (EX)
+* Memory Access (MEM)
+* Writeback (WB)
+
+The implementation will include hazard detection, forwarding, and pipeline control logic.
+
+---
+
+# FPGA-Based SoC
+
+## Overview
+
+*Planned.*
+
+The final processor will be integrated into an FPGA-based System-on-Chip containing memory-mapped peripherals, a system bus, and external interfaces.
+
+---
+
+# Hardware Accelerator
+
+## Overview
+
+*Planned.*

@@ -2,6 +2,7 @@
 
 * Studied single-cycle CPU architecture
 * Drew diagrams and truth tables
+* Used RISC-V instructions for datapaths and control signals
 
 # 06-14-2026
 
@@ -82,3 +83,32 @@ Result:
 
 * Processor passed reference testbench verification
 * Simulation completed successfully
+
+
+# 06-24-2026
+
+* Studied multicycle CPU architecture
+* Began forming initial processor diagram
+
+# 6-26-2026
+
+* Finished base diagram for multicycle CPU
+* Used RISC-V instructions for datapaths and control signals
+
+# 6-27-2026
+
+* Drew controller diagram and FSM for control signals
+
+# 6-28-2026
+
+* Added finished diagrams to docs
+* Re-organized diagrams folder to allow for multiple CPUs
+* Reviewed single-cycle HDL and added comments
+* Added new folder in rtl/ for multicycle CPU HDL
+* Wrote top-level module 
+
+
+
+
+
+

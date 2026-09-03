@@ -1,6 +1,5 @@
 # Verification
-Processors have been verified using the reference validation program supplied with the Harris & Harris implementation.
-[Harris & Harris RV32I test program](../../software/asm/riscvtest.s).
+Processors have been verified using the [reference validation program](../../software/asm/riscvtest.s) supplied with the Harris & Harris implementation.
 The program executes arithmetic, logic, memory, branch, and jump instructions.
 Successful execution is indicated by writing the value 25 to address 100 ('0x64').
 
@@ -16,7 +15,7 @@ Successful execution is indicated by writing the value 25 to address 100 ('0x64'
 ## Single-cycle Processor
 ### Arithmetic and register writeback
 The first six instructions show correct immediate arithmetic, register arithmetic, logical operations, destination-register selection, and register-file writeback.
-![Single-cycle arithmetic and register writeback](docs/verification/gtkwave_screenshots/single_cycle_alu.png)
+![Single-cycle arithmetic and register writeback](../gtkwave_screenshots/single_cycle_alu.png)
 
 | PC | Instruction | Destination | Result |
 |---:|---|---:|---:|
@@ -31,7 +30,7 @@ The first six instructions show correct immediate arithmetic, register arithmeti
 ### Branch behavior
 The branch at `PC = 0x18` is not taken because `x5 != x7`. 
 The branch at `PC = 0x20` is taken because `x4 == x0`, causing execution to skip `PC = 0x24`.
-![Single-cycle branch verification](docs/verification/gtkwave_screenshots/single_cycle_branch.png)
+![Single-cycle branch verification](../gtkwave_screenshots/single_cycle_branch.png)
 
 |     PC | Instruction          | Branch behavior              | Result   |
 | -----: | -------------------- | ---------------------------- | -------- |
@@ -45,7 +44,7 @@ The branch at `PC = 0x20` is taken because `x4 == x0`, causing execution to skip
 ### Final program verification
 The final instruction sequence loads the previously stored value, calculates the expected result, and writes it to the test address.
 
-The `jal` instruction changes the PC directly from `0x40` to `0x48`, so the instruction at `0x44` is not executed. The final store satisfies the testbench success condition:
+The `jal` instruction changes the PC directly from `0x40` to `0x48`, so the instruction at `0x44` is not executed. The final store satisfies the [testbench](../../tb/testbench.sv) success condition:
 
 ```text
 MemWrite  = 1
@@ -55,7 +54,8 @@ WriteData = 0x00000019 # 25
 
 The processor writes `25` to address `100`, indicating success.
 
-![Single-cycle final store](docs/verification/gtkwave_screenshots/single_cycle_results.png)
+![Single-cycle final store](../gtkwave_screenshots/single_cycle_results.png)
+
 *The destination register, data address, and write data signals are displayed in decimal format for clarity.*
 
 |     PC | Machine code | Instruction       | RegWrite | `rd` |             Result | MemWrite | Memory operation                                      |

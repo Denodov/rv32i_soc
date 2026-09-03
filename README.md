@@ -14,10 +14,10 @@ The goal of this project is to progressively develop increasingly sophisticated 
 
 ## Current Status
 - [x] Single-cycle CPU
-- [ ] Multi-cycle CPU
+- [x] Multi-cycle CPU
 - [ ] Pipelined CPU
 
-## Tools
+## Tools & Software
 - SystemVerilog
 - Verilator
 - GTKWave
@@ -26,15 +26,9 @@ The goal of this project is to progressively develop increasingly sophisticated 
 - Linux
 
 ## Verification
-The single-cycle processor has been verified using the reference validation program supplied with the Harris & Harris implementation.
+The processors were simulated using the Harris & Harris RV32I reference test program. Successful execution is indicated by writing the value `25` to data-memory address `100`.
 
-Simulation workflow:
-
-SystemVerilog
-→ Verilator
-→ GTKWave
-→ Debug
-→ Verify
+See [Simulation Verification](docs/verification/verification.md) for GTKWave traces, expected instruction results, branch behavior, and final success conditions.
 
 ### References
 - Harris, S., & Harris, D. (2021). Digital Design and Computer Architecture: RISC-V Edition. Morgan Kaufmann.

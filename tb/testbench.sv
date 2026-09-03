@@ -1,4 +1,4 @@
-// Test bench for single-cycle CPU
+// Testbench for single, multi, pipelined CPUs
 
 module  testbench();
 
@@ -11,10 +11,17 @@ module  testbench();
     top dut(clk, reset, WriteData, DataAdr, MemWrite);
 
 // initialize test
+
+string vcdfile;
+
     initial
         begin
             reset = 1; #22; reset = 0;
-            $dumpfile("sccpu.vcd");
+
+            if (!$value$plusargs("vcd=%s", vcdfile))
+                vcdfile = "cpu.vcd";
+
+            $dumpfile(vcdfile);
             $dumpvars(0, testbench);
         end
 
@@ -30,10 +37,10 @@ module  testbench();
             if (MemWrite) begin
                 if (DataAdr === 100 && WriteData === 25) begin
                     $display("Simulation succeeded");
-                    $stop;
+                    $finish;
                 end else if (DataAdr !== 96) begin
-                    $display("Simulation failed");
-                    $stop;
+                    $fatal(1, "Simulation failed: address=%0d data=%0d",
+                              DataAdr, WriteData);
                 end
             end
         end

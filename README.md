@@ -1,8 +1,8 @@
-# RV32I Processors and FPGA SoC
+# RV32I Processors
 
 A collection of RISC-V processor implementations developed in SystemVerilog as part of a long-term computer architecture and digital design project.
 
-The goal of this project is to progressively develop increasingly sophisticated RV32I processor implementations, beginning with a verified single-cycle processor and eventually expanding to multicycle, pipelined, FPGA-based SoC, and hardware accelerator designs.
+The goal of this project is to progressively develop RV32I processor implementations, beginning with a verified single-cycle processor and eventually expanding to multicycle, pipelined, FPGA-based SoC, and hardware accelerator designs.
 
 ## Goals
 - Single-cycle RV32I CPU
